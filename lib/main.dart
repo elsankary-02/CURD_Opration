@@ -1,4 +1,5 @@
 import 'package:crud_opration/core/constants/color_manger.dart';
+import 'package:crud_opration/core/router/router.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,7 +11,8 @@ class CrudOpration extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router.config(),
       theme: ThemeData(
         scaffoldBackgroundColor: ColorManger.kscaffoldBackgroundColor,
       ),
