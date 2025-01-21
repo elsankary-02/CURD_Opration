@@ -2,7 +2,7 @@ import 'package:crud_opration/core/components/custom_button.dart';
 import 'package:crud_opration/core/components/custom_text_field.dart';
 import 'package:crud_opration/core/constants/color_manger.dart';
 import 'package:crud_opration/core/constants/image_manger.dart';
-import 'package:crud_opration/home/data/model/contact.dart';
+import 'package:crud_opration/home/data/model/contact_model.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,9 +13,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Contact> contactes = [];
+  List<ContactModle> contacteItem = [];
+
   final nameController = TextEditingController();
-  final ageController = TextEditingController();
+  final numberController = TextEditingController();
+
+  int selectedIndex = 0;
+  @override
+  void dispose() {
+    nameController.dispose();
+    numberController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: ColorManger.kMaterialColor,
         centerTitle: true,
-        // AppBar
+        //! AppBar
         title: Text(
           'CRUD Opration',
           style: TextStyle(
@@ -35,37 +44,38 @@ class _HomePageState extends State<HomePage> {
         child: SafeArea(
           child: Column(
             children: [
-              // name
+              //! name
               CustomTextField(
                 hintText: 'name',
                 keyboardType: TextInputType.name,
                 controller: nameController,
               ),
               SizedBox(height: 20),
-              // number
+              //! number
 
               CustomTextField(
                 maxLength: 11,
                 hintText: 'number',
                 keyboardType: TextInputType.number,
-                controller: ageController,
+                controller: numberController,
               ),
               SizedBox(height: 20),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  // save Botton
+                  //! save Botton
                   InkWell(
                     borderRadius: BorderRadius.circular(8),
                     onTap: () {
-                      final name = nameController.text;
-                      final number = ageController.text;
+                      String name = nameController.text;
+                      String number = numberController.text;
                       if (name.isNotEmpty && number.isNotEmpty) {
                         setState(() {
                           nameController.text = '';
-                          ageController.text = '';
-                          contactes.add(Contact(name: name, number: number));
+                          numberController.text = '';
+                          contacteItem
+                              .add(ContactModle(name: name, number: number));
                         });
                       }
                     },
@@ -73,11 +83,21 @@ class _HomePageState extends State<HomePage> {
                         backGroundColor: ColorManger.kMaterialColor,
                         titel: 'Save'),
                   ),
-                  // Update Botton
+                  //! Update Botton
                   InkWell(
                     borderRadius: BorderRadius.circular(8),
                     onTap: () {
-                      setState(() {});
+                      String name = nameController.text;
+                      String number = numberController.text;
+                      if (name.isNotEmpty && number.isNotEmpty) {
+                        setState(() {
+                          nameController.text = '';
+                          numberController.text = '';
+                          contacteItem[selectedIndex].name;
+                          contacteItem[selectedIndex].number;
+                          selectedIndex = -1;
+                        });
+                      }
                     },
                     child: CustomButton(
                         backGroundColor: ColorManger.kMaterialColor,
@@ -86,44 +106,58 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               SizedBox(height: 20),
-              contactes.isEmpty
+              contacteItem.isEmpty
                   ? Expanded(
-                      //image
+                      //! image
                       child: Image.asset(
                       ImageManger.kNoIteams,
-                      fit: BoxFit.cover,
                     ))
                   : Expanded(
                       child: ListView.builder(
-                        itemCount: contactes.length,
+                        itemCount: contacteItem.length,
                         itemBuilder: (context, index) {
                           return Card(
                             child: ListTile(
-                              // CircleAvatar
+                              //! CircleAvatar
                               leading: CircleAvatar(
                                 backgroundColor: index % 2 == 0
                                     ? ColorManger.kMaterialColor
                                     : ColorManger.kGlodenColor,
                                 child: Text(
-                                  contactes[index].name[0],
+                                  contacteItem[index].name[0],
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700),
                                 ),
                               ),
-                              title: Text(contactes[index].name),
+                              title: Text(contacteItem[index].name),
                               horizontalTitleGap: 30,
-                              subtitle: Text(contactes[index].number),
+                              subtitle: Text(contacteItem[index].number),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  //! Edit
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      nameController.text =
+                                          contacteItem[index].name;
+                                      numberController.text =
+                                          contacteItem[index].number;
+                                      setState(() {
+                                        selectedIndex = index;
+                                      });
+                                    },
                                     icon: Icon(Icons.edit),
                                   ),
+                                  //! Delete
+
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      setState(() {
+                                        contacteItem.removeAt(index);
+                                      });
+                                    },
                                     icon: Icon(Icons.delete),
                                   ),
                                 ],
